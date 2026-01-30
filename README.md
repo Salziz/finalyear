@@ -5,6 +5,7 @@ This project provides a lightweight monitoring console for AI camera feeds so op
 ## Features
 - Responsive monitoring dashboard for desktop and mobile.
 - Supports HLS, MJPEG, snapshot, or WebRTC feed placeholders.
+- Includes a local webcam option for testing without external cameras.
 - Simple JSON configuration for camera metadata.
 
 ## Quick Start
@@ -40,6 +41,7 @@ Edit `config/cameras.json` to point at your camera feeds.
 - `mjpeg` for MJPEG HTTP streams.
 - `snapshot` for periodic JPEG/PNG snapshots.
 - `webrtc` (placeholder text for now) for WebRTC operators.
+- `webcam` for using a local browser webcam during testing.
 
 ## Next Steps
 - Add authentication for operators.

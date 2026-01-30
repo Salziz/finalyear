@@ -4,8 +4,8 @@
       "id": "north-perimeter-01",
       "name": "North Perimeter",
       "location": "Sector A",
-      "type": "hls",
-      "url": "https://example.com/stream/north.m3u8"
+      "type": "webcam",
+      "url": "local-webcam"
     },
     {
       "id": "east-watchtower-02",

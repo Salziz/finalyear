@@ -83,6 +83,31 @@ function renderFeed(camera, container) {
     return renderPlaceholder("WebRTC feed: open the operator app to connect.");
   }
 
+  if (type === "webcam") {
+    const placeholder = renderPlaceholder("Awaiting webcam permission...");
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      placeholder.textContent = "Webcam access not supported on this device.";
+      return placeholder;
+    }
+
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: false })
+      .then((stream) => {
+        const video = document.createElement("video");
+        video.autoplay = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.srcObject = stream;
+        placeholder.replaceWith(video);
+      })
+      .catch(() => {
+        placeholder.textContent = "Webcam permission denied or unavailable.";
+      });
+
+    return placeholder;
+  }
+
   return renderPlaceholder("Unsupported feed type.");
 }
 
