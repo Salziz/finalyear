@@ -1,0 +1,25 @@
+{
+  "cameras": [
+    {
+      "id": "north-perimeter-01",
+      "name": "North Perimeter",
+      "location": "Sector A",
+      "type": "hls",
+      "url": "https://example.com/stream/north.m3u8"
+    },
+    {
+      "id": "east-watchtower-02",
+      "name": "East Watchtower",
+      "location": "Sector B",
+      "type": "mjpeg",
+      "url": "https://example.com/stream/east.mjpeg"
+    },
+    {
+      "id": "south-patrol-03",
+      "name": "South Patrol",
+      "location": "Sector C",
+      "type": "webrtc",
+      "url": "webrtc://edge/south"
+    }
+  ]
+}

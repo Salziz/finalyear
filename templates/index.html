@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Border Surveillance Station</title>
+    <link rel="stylesheet" href="/static/app.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.8"></script>
+    <script defer src="/static/app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Solar-Powered Remote Station</p>
+        <h1>Border Surveillance Monitoring</h1>
+        <p class="subtitle">
+          Live camera feeds, alerts, and device status are available from any remote station, mobile phone,
+          or PC.
+        </p>
+      </div>
+      <div class="status">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="connectionStatus">Connecting…</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="summary">
+        <div>
+          <h2>Camera Overview</h2>
+          <p>Monitor AI camera feeds over HLS, MJPEG, or WebRTC. Configure sources in <code>config/cameras.json</code>.</p>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric-label">Active Cameras</span>
+            <span id="cameraCount" class="metric-value">0</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Health</span>
+            <span id="healthStatus" class="metric-value">Checking…</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Live Feeds</h2>
+        <div id="cameraGrid" class="camera-grid">
+          <div class="placeholder">
+            <p>Loading camera feeds…</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Border Surveillance Station • Secure Remote Monitoring</p>
+    </footer>
+  </body>
+</html>
