@@ -20,7 +20,7 @@ python app.py
 Then open `http://localhost:5000` in your browser.
 
 ## Configure Camera Feeds
-Edit `config/cameras.json` to point at your camera feeds.
+Edit `config/cameras.json` to point at your camera feeds. For IP Webcam, use the MJPEG endpoint (e.g., `http://<ip>:8080/video`).
 
 ```json
 {
