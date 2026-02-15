@@ -1,0 +1,25 @@
+{
+  "cameras": [
+    {
+      "id": "north-perimeter-01",
+      "name": "North Perimeter",
+      "location": "Sector A",
+      "type": "mjpeg",
+      "url": "http://172.23.111.235:8080/video"
+    },
+    {
+      "id": "east-watchtower-02",
+      "name": "East Watchtower",
+      "location": "Sector B",
+      "type": "mjpeg",
+      "url": "https://example.com/stream/east.mjpeg"
+    },
+    {
+      "id": "south-patrol-03",
+      "name": "South Patrol",
+      "location": "Sector C",
+      "type": "webrtc",
+      "url": "webrtc://edge/south"
+    }
+  ]
+}
