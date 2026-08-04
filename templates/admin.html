@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin — Border Surveillance</title>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --panel: #161a22;
+    --border: #2a2f3a;
+    --text: #e8eaed;
+    --muted: #9aa0ac;
+    --accent: #4f8cff;
+    --danger: #e5484d;
+    --success: #34c759;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: 24px;
+  }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .sub { color: var(--muted); margin-bottom: 24px; font-size: 14px; }
+  .back-link { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .panel h2 {
+    font-size: 15px;
+    margin: 0 0 16px 0;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin: 12px 0 4px;
+  }
+  input[type=text], select {
+    width: 100%;
+    padding: 8px 10px;
+    background: #0d0f14;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 14px;
+  }
+  input[type=file] {
+    width: 100%;
+    padding: 8px 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .btn-primary { background: var(--accent); color: white; width: 100%; margin-top: 16px; }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 6px 10px; font-size: 12px; }
+  .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); width: 100%; margin-top: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; }
+  .badge { padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-cleared { background: rgba(52,199,89,0.15); color: var(--success); }
+  .badge-not-cleared { background: rgba(229,72,77,0.15); color: var(--danger); }
+  #status-msg { margin-top: 12px; font-size: 13px; min-height: 18px; }
+  .msg-ok { color: var(--success); }
+  .msg-err { color: var(--danger); }
+</style>
+</head>
+<body>
+
+  <a href="/" class="back-link">&larr; Back to dashboard</a>
+  <h1>Admin Panel</h1>
+  <div class="sub">Enroll, delete, and retrain recognized individuals</div>
+
+  <div class="grid">
+
+    <div class="panel">
+      <h2>Enroll New Person</h2>
+      <form id="enroll-form">
+        <label>Full Name</label>
+        <input type="text" id="full_name" required>
+
+        <label>ID Number</label>
+        <input type="text" id="id_number" required>
+
+        <label>Role</label>
+        <input type="text" id="role" placeholder="e.g. Visitor, Staff, Officer" value="Visitor">
+
+        <label>Clearance Status</label>
+        <select id="clearance_status">
+          <option value="true">CLEARED</option>
+          <option value="false">NOT CLEARED</option>
+        </select>
+
+        <label>Photos (select multiple, 15-30 recommended)</label>
+        <input type="file" id="photos" accept=".jpg,.jpeg,.png" multiple required>
+
+        <button type="submit" class="btn-primary">Enroll &amp; Retrain</button>
+      </form>
+      <div id="status-msg"></div>
+
+      <button id="retrain-btn" class="btn-secondary">Retrain Only (no changes)</button>
+    </div>
+
+    <div class="panel">
+      <h2>Enrolled Individuals</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="individuals-table">
+          {% for person in individuals %}
+          <tr data-id="{{ person.id }}">
+            <td>{{ person.full_name }}</td>
+            <td>{{ person.id_number }}</td>
+            <td>{{ person.role }}</td>
+            <td>
+              {% if person.clearance_status %}
+                <span class="badge badge-cleared">CLEARED</span>
+              {% else %}
+                <span class="badge badge-not-cleared">NOT CLEARED</span>
+              {% endif %}
+            </td>
+            <td><button class="btn-danger" onclick="deletePerson({{ person.id }}, '{{ person.full_name }}')">Delete</button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+<script>
+const statusMsg = document.getElementById('status-msg');
+
+function showStatus(text, isError) {
+  statusMsg.textContent = text;
+  statusMsg.className = isError ? 'msg-err' : 'msg-ok';
+}
+
+document.getElementById('enroll-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('full_name', document.getElementById('full_name').value);
+  formData.append('id_number', document.getElementById('id_number').value);
+  formData.append('role', document.getElementById('role').value);
+  formData.append('clearance_status', document.getElementById('clearance_status').value);
+  const photos = document.getElementById('photos').files;
+  for (let i = 0; i < photos.length; i++) {
+    formData.append('photos', photos[i]);
+  }
+
+  showStatus('Enrolling and retraining... this may take a moment', false);
+  try {
+    const res = await fetch('/api/admin/enroll', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.ok) {
+      showStatus(data.message + (data.retrained ? ' — retrained successfully' : ' — retrain failed'), !data.retrained);
+      setTimeout(() => window.location.reload(), 1200);
+    } else {
+      showStatus('Error: ' + data.error, true);
+    }
+  } catch (err) {
+    showStatus('Request failed: ' + err, true);
+  }
+});
+
+document.getElementById('retrain-btn').addEventListener('click', async () => {
+  showStatus('Retraining...', false);
+  try {
+    const res = await fetch('/api/admin/retrain', { method: 'POST' });
+    const data = await res.json();
+    showStatus(data.ok ? data.message : 'Error: ' + data.error, !data.ok);
+  } catch (err) {
+    showStatus('Request failed: ' + err, true);
+  }
+});
+
+async function deletePerson(id, name) {
+  if (!confirm(`Delete ${name}? This removes their photos and retrains the model.`)) return;
+  showStatus(`Deleting ${name} and retraining...`, false);
+  try {
+    const res = await fetch(`/api/admin/delete/${id}`, { method: 'POST' });
+    const data = await res.json();
+    if (data.ok) {
+      showStatus(data.message + (data.retrained ? ' — retrained successfully' : ' — retrain failed'), !data.retrained);
+      setTimeout(() => window.location.reload(), 1000);
+    } else {
+      showStatus('Error: ' + data.error, true);
+    }
+  } catch (err) {
+    showStatus('Request failed: ' + err, true);
+  }
+}
+</script>
+</body>
+</html>

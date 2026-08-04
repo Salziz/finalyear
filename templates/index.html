@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0c" />
+  <meta name="description" content="Border surveillance monitoring PWA" />
+  <title>Border Surveillance</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+  <!-- Alert banner (NOT CLEARED detections) -->
+  <div id="alert-banner" class="alert-banner hidden" role="alert">
+    <span id="alert-text"></span>
+    <button type="button" id="alert-dismiss" aria-label="Dismiss alert">&times;</button>
+  </div>
+
+  <!-- Top status bar -->
+  <header class="status-bar">
+    <div class="status-item">
+      <span class="status-label">Camera</span>
+      <span id="status-camera" class="status-value">—</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Recording</span>
+      <span id="status-recording" class="status-value">IDLE</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Database</span>
+      <span id="status-db" class="status-value">—</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Session</span>
+      <span id="status-session" class="status-value">00:00:00</span>
+    </div>
+  </header>
+
+  <main class="dashboard" id="dashboard">
+    <!-- LEFT: Live feed & controls -->
+    <section class="panel panel-feed" aria-label="Live feed">
+      <h2 class="panel-title">Live Feed</h2>
+      <div class="feed-wrapper">
+        <img id="live-feed" src="/video_feed" alt="Live camera feed" />
+        <div id="rec-indicator" class="rec-indicator hidden" title="Recording">
+          <span class="rec-dot"></span> REC
+        </div>
+      </div>
+      <div class="feed-controls">
+        <button type="button" id="btn-scan" class="btn btn-scan hidden" title="Dev only — manual face scan">
+          Scan Now
+        </button>
+        <button type="button" id="btn-record" class="btn btn-record">Start Recording</button>
+      </div>
+    </section>
+
+    <!-- CENTER: Timeline & playback -->
+    <section class="panel panel-timeline" aria-label="Recording timeline">
+      <h2 class="panel-title">Timeline / Playback</h2>
+      <div id="timeline-list" class="timeline-list"></div>
+      <div class="playback-area">
+        <video id="playback-video" controls preload="metadata" playsinline></video>
+        <input type="range" id="playback-scrubber" class="scrubber" min="0" max="100" value="0" step="0.1" />
+        <p id="playback-meta" class="playback-meta">Select a session to play back</p>
+      </div>
+    </section>
+
+    <!-- RIGHT: Identification card -->
+    <section class="panel panel-id" aria-label="Identification">
+      <h2 class="panel-title">Identification</h2>
+      <article id="id-card" class="id-card compact" tabindex="0" role="button" aria-label="Open identification details">
+        <img id="id-photo" class="id-photo" src="" alt="Detected individual" />
+        <div class="id-body">
+          <p id="id-name" class="id-name">—</p>
+          <p id="id-number" class="id-row"><span>ID:</span> —</p>
+          <p id="id-clearance" class="id-clearance">—</p>
+          <p id="id-role" class="id-row"><span>Role:</span> —</p>
+          <p id="id-time" class="id-time">—</p>
+        </div>
+      </article>
+      <p class="id-hint">Click card for full details</p>
+    </section>
+  </main>
+
+  <!-- Modal: enlarged ID card -->
+  <div id="id-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-content" role="dialog" aria-labelledby="modal-title">
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">&times;</button>
+      <h2 id="modal-title">Identification Details</h2>
+      <img id="modal-photo" class="modal-photo" src="" alt="" />
+      <dl class="modal-details">
+        <dt>Full Name</dt><dd id="modal-name">—</dd>
+        <dt>ID Number</dt><dd id="modal-id">—</dd>
+        <dt>Clearance</dt><dd id="modal-clearance">—</dd>
+        <dt>Role / Designation</dt><dd id="modal-role">—</dd>
+        <dt>Detected At</dt><dd id="modal-time">—</dd>
+        <dt>Result</dt><dd id="modal-result">—</dd>
+      </dl>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="/static/js/socket.js"></script>
+  <script src="/static/js/timeline.js"></script>
+  <script src="/static/js/main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').catch(console.warn);
+    }
+  </script>
+</body>
+</html>

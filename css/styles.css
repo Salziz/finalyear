@@ -1,0 +1,377 @@
+/*
+ * styles.css — Dark-theme responsive layout for border surveillance PWA.
+ * Near-black palette for low-light control rooms; mobile stacks panels vertically.
+ */
+
+:root {
+  --bg: #0a0a0c;
+  --panel: #12141a;
+  --border: #2a2d36;
+  --text: #e8eaef;
+  --muted: #8b909a;
+  --accent: #3d7eff;
+  --cleared: #2ecc71;
+  --not-cleared: #e74c3c;
+  --rec: #ff3b3b;
+  --alert-bg: #4a0f0f;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: box-shadow 0.2s ease;
+}
+
+/* Red flash border on uncleared alert */
+body.alert-active {
+  box-shadow: inset 0 0 0 4px var(--not-cleared);
+}
+
+.alert-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--alert-bg);
+  border-bottom: 2px solid var(--not-cleared);
+  color: #ffb4b4;
+  font-weight: 600;
+}
+
+.alert-banner.hidden {
+  display: none;
+}
+
+#alert-dismiss {
+  background: transparent;
+  border: 1px solid var(--not-cleared);
+  color: var(--text);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.status-label {
+  color: var(--muted);
+  margin-right: 0.35rem;
+}
+
+.status-value {
+  font-weight: 600;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 0.85fr;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  min-height: calc(100vh - 90px);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
+
+.panel-title {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Live feed */
+.feed-wrapper {
+  position: relative;
+  background: #000;
+  border-radius: 6px;
+  overflow: hidden;
+  flex: 1;
+}
+
+#live-feed {
+  width: 100%;
+  display: block;
+  min-height: 200px;
+  object-fit: contain;
+}
+
+.rec-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--rec);
+}
+
+.rec-indicator.hidden {
+  display: none;
+}
+
+.rec-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--rec);
+  border-radius: 50%;
+  animation: pulse-rec 1s ease-in-out infinite;
+}
+
+@keyframes pulse-rec {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.feed-controls {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.btn {
+  width: 100%;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-record {
+  background: #2a3140;
+  color: var(--text);
+}
+
+.btn-record.recording {
+  background: var(--not-cleared);
+  color: #fff;
+}
+
+.btn-scan {
+  background: #1a3a5c;
+  color: var(--text);
+  border: 1px solid var(--accent);
+}
+
+.btn-scan:hover {
+  background: #234a72;
+}
+
+.btn-scan:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Timeline */
+.timeline-list {
+  max-height: 180px;
+  overflow-y: auto;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.timeline-item {
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.timeline-item:hover,
+.timeline-item.active {
+  background: #1a1e28;
+}
+
+.timeline-item .meta {
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+}
+
+.playback-area video {
+  width: 100%;
+  max-height: 220px;
+  background: #000;
+  border-radius: 6px;
+}
+
+.scrubber {
+  width: 100%;
+  margin: 0.4rem 0;
+}
+
+.playback-meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* ID card */
+.id-card {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.id-card:hover {
+  border-color: var(--accent);
+}
+
+.id-photo {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #000;
+}
+
+.id-name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.id-row span {
+  color: var(--muted);
+}
+
+.id-clearance {
+  font-weight: 700;
+  margin: 0.25rem 0;
+}
+
+.id-clearance.cleared {
+  color: var(--cleared);
+}
+
+.id-clearance.not-cleared {
+  color: var(--not-cleared);
+}
+
+.id-time {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.id-hint {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.35rem;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  max-width: 420px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-photo {
+  width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 0.5rem 0 1rem;
+  background: #000;
+}
+
+.modal-details dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.modal-details dd {
+  font-weight: 600;
+}
+
+/* Responsive: mobile stacks feed → ID → timeline */
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "feed"
+      "id"
+      "timeline";
+  }
+
+  .panel-feed { grid-area: feed; }
+  .panel-id { grid-area: id; }
+  .panel-timeline { grid-area: timeline; }
+}
